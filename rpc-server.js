@@ -268,7 +268,7 @@ RpcServer.createServer = function(service_id, auth_service_ids, schema, service,
   // undefined route -
   app.use(function(req, res, next) {
     let error = createError(req, undefined, { err_type: Error.RPC_METHOD_NOT_FOUND_ERROR, 
-      err_message:"Some issue with service schema or API controller. Use this doc for reference: https://urbanclap.atlassian.net/wiki/spaces/ENGG/pages/1192132689/How+to+write+a+service+in+nodejs#Howtowriteaserviceinnodejs-RPC_METHOD_NOT_FOUNDError"});
+      err_message:"Some issue with service schema or API controller."});
     let route = _.get(req._parsedUrl, 'pathname', req.base_url);
     let monitoringParams = getMonitoringParameters(service_id, req.query.client_id, route, RPC_CONSTANTS.HTTP_RESPONSE_CODE_ERROR, error[LOG_CONSTANTS.SYSTEM_LOGS.ERROR_TYPE], Singleton.Config.ENV, req.start_time_ms, req.headers, '', req.body);
     PrometheusExporter.captureServerRequestDurationMetric(monitoringParams);
