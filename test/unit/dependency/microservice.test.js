@@ -1,9 +1,22 @@
 // Project specific mocks start
-const testSetup = require('../test-loader')();
+const RpcFramework = require('../../../index');
+jest.spyOn(RpcFramework, 'createClient').mockImplementation(() => {
+  return {};
+});
+
+jest.spyOn(RpcFramework, 'getSingleton').mockImplementation(() => {
+  return {
+    Config: { getServiceConf: function getServiceConf(serviceId) { return { uri: "", port: "" } } }
+  }
+});
+
+const { OpenApiSchema } = require('../../../schema/services');
+jest.spyOn(OpenApiSchema, 'getOpenApiObj').mockImplementation(() => {
+  return { schema: {} };
+});
 
 // Module imports start
-const RpcFramework = require('../../..');
-const Microservice = require('../../../dependency/microservice');
+const { Microservice } = require('../../../dependency/microservice');
 
 describe('test microservice dependency', () => {
 

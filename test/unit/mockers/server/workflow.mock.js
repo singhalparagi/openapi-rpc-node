@@ -1,4 +1,4 @@
-jest.mock('../../../../server/dependency_loader');
+jest.mock('../../../../server/common/dependency_loader');
 
 const Constants = require('../../../../constants');
 jest.doMock('../../../../constants', () => {
@@ -13,10 +13,11 @@ jest.mock('../../../../package.json', () => {
   };
 });
 jest.mock('../../../../dependency/mycroft_monitoring');
-jest.mock('../../../../schema/services/service_self_schema_object');
+jest.mock('../../../../schema/services/schema_object');
 const RpcFramework = require('../../../../index');
-jest.spyOn(RpcFramework, 'initCredentials').mockImplementation(() => {
-  return new Promise(resolve => {
+const CredentialManagement = require("../../../../credential_management");
+jest.spyOn(CredentialManagement, 'initCredentials').mockImplementation(() => {
+  return new Promise((resolve) => {
     resolve();
   });
 });
@@ -30,6 +31,13 @@ jest.spyOn(RpcFramework, 'initConfig').mockImplementation(() => {
       RPCClientTestConstants.INTERNAL.TEST_CALLED_SERVICE_AUTH_IDS
   };
 });
+const { Securitas } = require('../../../../dependency/securitas')
+jest.spyOn(Securitas, 'initSecuritasClient').mockImplementation(() => {
+  return new Promise((resolve) => {
+    resolve();
+  })
+})
+
 
 const Logger = {
   info: jest.fn(),

@@ -4,6 +4,7 @@ const _ = require('lodash');
 const loggerInstance = require('@uc-engg/logging-repo').initLogger(process.env.LOG_INDEX_NAME);
 const logFilter = require('./logging/filter');
 const Error = require('./error');
+const { LoggingUtils } = require('./logging/logging_utils');
 
 // Helper functions //
 
@@ -21,7 +22,6 @@ function createApiLog(response, extra, error) {
 }
 
 function getApiRequestData (request) {
-  let Config = require('./config');
   let data = {};
   if (!_.isUndefined(request._startTime)) {
     data.api_time = Number(new Date() - request._startTime);
@@ -56,12 +56,12 @@ function getApiRequestData (request) {
   if (!_.isUndefined(request.method)) {
     data.method = request.method;
   }
-  data.container_id =  Config.getContainerId();
-  data.task_id = Config.getTaskId();
-  data.container_ip = Config.getContainerIp();
-  data.build_version = Config.getBuildVersion();
-  data.container_port = Config.getContainerPort();
-  data.service_port = Config.getServicePort();
+  data.container_id =  LoggingUtils.getContainerId();
+  data.task_id = LoggingUtils.getTaskId();
+  data.container_ip = LoggingUtils.getContainerIp();
+  data.build_version = LoggingUtils.getBuildVersion();
+  data.container_port = LoggingUtils.getContainerPort();
+  data.service_port = LoggingUtils.getServicePort();
   return data;
 }
 
@@ -135,7 +135,6 @@ Logger.system = function(port, message) {
 };
 
 function appInfoObj(log_genre, client_id, trxn_id, user_agent, method_id, res_time_ms) {
-  let Config = require('./config');
   return {
     log_type: LOG_TYPE,
     log_genre: log_genre,
@@ -144,12 +143,12 @@ function appInfoObj(log_genre, client_id, trxn_id, user_agent, method_id, res_ti
     response_time_ms: res_time_ms,
     trxn_id: trxn_id,    
     user_agent: user_agent,
-    container_id:  Config.getContainerId(),
-    container_ip: Config.getContainerIp(),
-    build_version: Config.getBuildVersion(),
-    task_id: Config.getTaskId(),
-    container_port: Config.getContainerPort(),
-    service_port: Config.getServicePort()
+    container_id:  LoggingUtils.getContainerId(),
+    container_ip: LoggingUtils.getContainerIp(),
+    build_version: LoggingUtils.getBuildVersion(),
+    task_id: LoggingUtils.getTaskId(),
+    container_port: LoggingUtils.getContainerPort(),
+    service_port: LoggingUtils.getServicePort()
   }
 }
 
@@ -165,23 +164,21 @@ Logger.appError = function(client_id, trxn_id, user_agent, method_id, res_time_m
 };
 
 Logger.info = function(data) {
-  let Config = require('./config');
   if (typeof data === 'string' || typeof data === 'number') data = {message: data};
   validateSchema(data);
   loggerInstance.info(_.assign({ 
     log_type: LOG_TYPE, 
     log_genre: LOG_GENRE.INFO,
-    container_id:  Config.getContainerId(),
-    container_ip: Config.getContainerIp(),
-    build_version: Config.getBuildVersion(),
-    task_id: Config.getTaskId(),
-    container_port: Config.getContainerPort(),
-    service_port: Config.getServicePort()
+    container_id:  LoggingUtils.getContainerId(),
+    container_ip: LoggingUtils.getContainerIp(),
+    build_version: LoggingUtils.getBuildVersion(),
+    task_id: LoggingUtils.getTaskId(),
+    container_port: LoggingUtils.getContainerPort(),
+    service_port: LoggingUtils.getServicePort()
   }, data));  
 };
 
 Logger.error = function(data) {
-  let Config = require('./config');
   if (typeof data === 'string' || typeof data === 'number') data = {message: data};
   validateSchema(data);
   if(!data['error_type']) {
@@ -190,28 +187,27 @@ Logger.error = function(data) {
   loggerInstance.error(_.assign({ 
     log_type: LOG_TYPE, 
     log_genre: LOG_GENRE.ERROR,
-    container_id:  Config.getContainerId(),
-    container_ip: Config.getContainerIp(),
-    build_version: Config.getBuildVersion(),
-    task_id: Config.getTaskId(),
-    container_port: Config.getContainerPort(),
-    service_port: Config.getServicePort()
+    container_id:  LoggingUtils.getContainerId(),
+    container_ip: LoggingUtils.getContainerIp(),
+    build_version: LoggingUtils.getBuildVersion(),
+    task_id: LoggingUtils.getTaskId(),
+    container_port: LoggingUtils.getContainerPort(),
+    service_port: LoggingUtils.getServicePort()
   }, data));
 };
 
 Logger.debug = function(options, data) {
-  let Config = require('./config');
   if (typeof data === 'string' || typeof data === 'number') data = {message: data};
   validateSchema(data);
   loggerInstance.debug(options, _.assign({
     log_type: LOG_TYPE, 
     log_genre: LOG_GENRE.DEBUG,
-    container_id:  Config.getContainerId(),
-    container_ip: Config.getContainerIp(),
-    build_version: Config.getBuildVersion(),
-    task_id: Config.getTaskId(),
-    container_port: Config.getContainerPort(),
-    service_port: Config.getServicePort()
+    container_id:  LoggingUtils.getContainerId(),
+    container_ip: LoggingUtils.getContainerIp(),
+    build_version: LoggingUtils.getBuildVersion(),
+    task_id: LoggingUtils.getTaskId(),
+    container_port: LoggingUtils.getContainerPort(),
+    service_port: LoggingUtils.getServicePort()
   }, data))    
 };
 

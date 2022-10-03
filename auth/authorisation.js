@@ -3,7 +3,6 @@
 const compose = require('composable-middleware');
 const Singleton = require('../singleton').getSingleton();
 const Error = require('../error');
-const UCError = Error.UCError;
 const _ = require('lodash');
 const AuthMetricUtils = require('./auth_metric_utils');
 const AUTH_CONSTANTS = require('./auth_constants').AUTH_METRICS;
@@ -13,7 +12,7 @@ const TYPE_LABEL = AUTH_CONSTANTS.LABEL.TYPE;
 const ERROR_TYPE_LABEL = AUTH_CONSTANTS.LABEL.ERROR_TYPE;
 const ROUTE_NAME_LABEL = AUTH_CONSTANTS.LABEL.ROUTE;
 const GUEST_ROLE_ALLOWED_LABEL = AUTH_CONSTANTS.LABEL.GUEST_ROLE_ALLOWED;
-const CommonUtils = require('../common/request_headers_util');
+const { RequestHeadersUtil } = require('../common/request_headers_util');
 
 let clientAuthorisation = {};
 
@@ -36,16 +35,16 @@ clientAuthorisation.isAuthorised = (options) => {
   
   if (!resource || !entity || !resourceIdPath) {
     let error = {err_message: "Invalid options for authorisation in gateway config", err_type: Error.INVALID_PARAMS_ERROR};
-    throw new UCError(error);
+    throw new Error.RPCError(error);
   }
   return compose().use(async function(req, res, next) {
     const StartTime = Date.now();
-    const DeviceOS = CommonUtils.getDeviceType(req.headers);
+    const DeviceOS = RequestHeadersUtil.getDeviceType(req.headers);
     let requestId = _.get(req.body, resourceIdPath, null)
 
     if(!requestId) {
       let error = {err_message: "Resource ID not found in the body", err_type: Error.INVALID_PARAMS_ERROR};
-      return next(new UCError(error));
+      return next(new Error.RPCError(error));
     }
     let payload = {
       request_id: requestId,
@@ -69,13 +68,13 @@ clientAuthorisation.isAuthorised = (options) => {
           [ROUTE_NAME_LABEL]: _.get(req, 'originalUrl'),
           [ERROR_TYPE_LABEL]: AUTH_CONSTANTS.ERROR.UNHANDLED_TYPE
         });
-      let uc_error = {
+      let rpc_error = {
         name: 'authFailure',
         message: err.err_message,
         code: ERROR_CODES.UNAUTHORISED,
         err_type: Error.RPC_AUTH_ERROR
       }
-      return next(new UCError(uc_error));
+      return next(new Error.RPCError(rpc_error));
     }
     finally{
       AuthMetricUtils.captureResponseTimeMetric(AUTH_CONSTANTS.AUTH_METRIC_STORE,

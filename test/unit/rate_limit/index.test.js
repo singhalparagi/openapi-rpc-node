@@ -1,8 +1,6 @@
-const { UCError } = require('../../../error');
 const RateLimitResources = require('../resources/rate-limit.test.data');
 require('../mockers/rate_limit/rate-limit.mock')
 let rateLimitMiddleware = require('./../../../rate_limit/index');
-let Singleton = require('../../../singleton').getSingleton();
 describe('rate limit util', () => {
 
   const mockNextFunc = jest.fn().mockImplementation((params) => {

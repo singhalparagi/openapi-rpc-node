@@ -1,3 +1,5 @@
+const rpcConstants = require('../constants');
+
 let constants = {
   STRATEGY: {
     ON_DEMAND: 'on-demand',
@@ -11,10 +13,10 @@ let constants = {
     MEMORY: '.heapsnapshot',
     CPU: '.pb.gz'
   },
-  S3_PROFILE_BUCKET: 'uc-profiling-data',
+  S3_PROFILE_BUCKET: rpcConstants.PROFILER.S3_PROFILE_BUCKET,
   AWS_REGION: 'ap-southeast-1',
   DEFAULT_CPU_PROFILE_TIME: 300000,
-  S3_PROFILE_BUCKET_URL: 'https://uc-profiling-data.s3.ap-southeast-1.amazonaws.com/',
+  S3_PROFILE_BUCKET_URL: rpcConstants.PROFILER.S3_PROFILE_BUCKET_URL,
   S3_UPLOAD_FAILED_ERROR: 's3_upload_failed'
 };
 

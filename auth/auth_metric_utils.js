@@ -18,7 +18,7 @@ const LOG_CONSTANTS = require('../logging/log_constants');
 const LOG_TYPE = require('../logging/log_type');
 const IS_AUTH_MONITORING_ENABLED = (process.env.AUTH_MONITORING_ENABLED === 'true');
 const MycroftInitUtil = require('../monitoring/mycroft_init_util');
-const ServiceMetaDataUtil = require('../common/service_metadata_util');
+const { ServiceMetaDataUtil } = require('../common/service_metadata_util');
 
 const initCommonConfig = () => {
   const serviceId = ServiceMetaDataUtil.getServiceId();

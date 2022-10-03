@@ -32,12 +32,14 @@
           "event_producer_data": "event_producer_data",
           "event_consumer_data": "event_consumer_data"
         },
+        "CACHE": {
+          "cache_platform": "cache_platform"
+        },
         "auth_service": "auth_service",
         "media_utils": "media_utils",
         "event_producer": "event_producer",
         "event_consumer": "event_consumer",
         "avro_event_producer": "avro_event_producer",
-        "cache": "cache",
         "distributed_lock_manager": "distributed_lock_manager",
         "feature_config_manager": "feature_config_manager",
         "localization": "localization",
@@ -137,5 +139,12 @@
       "WEB_HOOK": "https://hooks.slack.com/services/SGDGDDF"
     }
    }
- }
+ },
+ "profiler-config": {
+  "type": "rpc_config",
+  "value": {
+      "S3_PROFILE_BUCKET": "profiling-data",
+      "S3_PROFILE_BUCKET_URL": "sample_url"
+  }
+}
 }

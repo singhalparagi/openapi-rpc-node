@@ -5,7 +5,7 @@ const ErrorTypes = require('../error');
 const ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';
 const MycroftCapture = require('./mycroft_capture');
 const util = require('./monitoring_util');
-const LOG_CONSTANTS = require('../logging/log_constants.json');
+const LOG_CONSTANTS = require('../logging/log_constants');
 const Singleton = require('../singleton').getSingleton();
 const LOG_TYPE = require('../logging/log_type');
 

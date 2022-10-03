@@ -1,4 +1,5 @@
 module.exports = {
+  preset: "ts-jest",
   "verbose": true,
   roots: ["test/unit/", "src/"],
  reporters: ["default"],
@@ -8,7 +9,6 @@ module.exports = {
  collectCoverageFrom: [
      "!test/**"
  ],
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   setupFiles: ["./test/unit/mockers/init.js", "./test/unit/mockers/mock.js"],
   testEnvironment: 'node'

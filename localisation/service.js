@@ -11,7 +11,8 @@ const ERRORS = require('../error');
 const StringObjectExtractor = require('./string_object_extractor')
 const TranslatedObjectCreator = require('./object_translator')
 const Marker = require('./translation_marker');
-const Singleton = require('../singleton').getSingleton();
+const { getSingleton } = require('../singleton');
+const Singleton = getSingleton();
 const LocalisationMetricUtil = require('./localisation_metric_utils');
 const TransactionContext = require('../transaction-context')
 LocalisationMetricUtil.initMetric();
@@ -21,10 +22,10 @@ const LocalisationService = {
   DefaultLanguage : 'english'
 };
 
-LocalisationService.getLocalizedResponse = (RpcFramework, response, options) => {
+LocalisationService.getLocalizedResponse = (response, options) => {
   let startTime = Date.now();
   try {
-    const Singleton = RpcFramework.getSingleton()
+    const Singleton = getSingleton();
     const GrootService = Singleton.GrootService || Singleton['groot-service'];
     const finalResponse = JSON.parse(JSON.stringify(response));
     return Promise.resolve()

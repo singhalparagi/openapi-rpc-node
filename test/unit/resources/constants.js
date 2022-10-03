@@ -3,7 +3,7 @@
 const constants = {
     "RPC_CLIENT": {
         "INTERNAL": {
-            "GATEWAY_URL": "uc-service-development-960667868.ap-southeast-1.elb.amazonaws.com",
+            "GATEWAY_URL": "host",
             "TEST_CALLER_SERVICE": "service-market",
             "TEST_CALLED_SERVICE": "logging-service",
             "TEST_CALLED_SERVICE_PORT": "8001",

@@ -1,8 +1,14 @@
 {
-    "serviceDependencySchema": {
-        "type": "custom",
-        "properties": {
-            "generatedSchemaFilePath": "dependency_schemas.json"
-        }
-    }
+  "serviceDependencySchema": {
+      "properties": {
+          "generatedSchemaFilePath": "dependency_schemas.json",
+          "gitGroupName": "myGroupName",
+          "gitToken": "gitToken",
+          "gitUri": "https://my.gitlab.location.com/"
+      },
+      "type": "custom"
+  },
+  "credentialStore": "credentials_json",
+  "authServiceIds": [],
+  "configSource": "Repo" 
 }

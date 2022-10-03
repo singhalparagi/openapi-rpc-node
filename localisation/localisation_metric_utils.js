@@ -6,11 +6,11 @@ const Singleton = require('../singleton').getSingleton();
 const LOG_CONSTANTS = require('../logging/log_constants');
 const LOG_TYPE = require('../logging/log_type');
 const MycroftInitUtil = require('../monitoring/mycroft_init_util');
-const ServiceMetadataUtil = require('../common/service_metadata_util');
+const { ServiceMetaDataUtil } = require('../common/service_metadata_util');
 const IS_LOCALISATION_MONITORING_ENABLED = (process.env.LOCALISATION_MONITORING_ENABLED === 'true');
 
 const initCommonConfig = () => {
-  const ServiceId = ServiceMetadataUtil.getServiceId();
+  const ServiceId = ServiceMetaDataUtil.getServiceId();
   const DefaultLabels = {
     [LocalisationMetricConstants.LABEL.SERVICE]: _.get(Singleton, 'Config.SUB_SERVICE_ID', ServiceId) 
   }

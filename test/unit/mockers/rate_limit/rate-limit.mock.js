@@ -45,6 +45,7 @@ LRU.mockImplementation((params) => {
   };
 })
 
-jest.spyOn(require('../../../../common/infra-util'), 'getContainerCount').mockImplementation(() => {
+const { InfraUtil } = require('../../../../common/infra_util')
+jest.spyOn(InfraUtil, 'getContainerCount').mockImplementation(() => {
   return 3;
 });

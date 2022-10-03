@@ -1,8 +1,6 @@
 'use strict';
 
 const Singleton = require('../singleton').getSingleton();
-const Error = require('../error');
-const UCError = Error.UCError;
 const _ = require('lodash');
 const localisation = Singleton.localization;
 const LOCALISATION_CONSTANTS = require('../localisation/constants');

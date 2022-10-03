@@ -6,7 +6,6 @@ const Singleton = require('../singleton').getSingleton();
 const RateLimitConstants = require('./constants');
 const RpcConstants =  require('../constants');
 const Error = require('../error');
-const UCError = Error.UCError;
 const RateLimitUtil = require('./util');
 // Imports end
 
@@ -54,7 +53,7 @@ RateLimit.serverRateLimiter = async function rateLimitMiddleware(req, res, next)
       }
     } else  {
       RateLimitUtil.logInfo(req, rateLimitPolicy);
-      return next(new UCError({
+      return next(new Error.RPCError({
         err_type: Error.REQUEST_RATE_LIMITED,
         err_message: "Too many requests",
         code: RpcConstants.HTTP_RESPONSE_CODE_TOO_MANY_REQUESTS

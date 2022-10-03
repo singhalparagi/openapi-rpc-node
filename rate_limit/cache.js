@@ -8,7 +8,7 @@ const Logger = require('../logging/standard_logger');
 const LOG_CONSTANTS = require('../logging/log_constants');
 const LOG_TYPE = require('../logging/log_type');
 const RateLimitUtil = require('./util');
-const InfraUtil = require('../common/infra-util');
+const { InfraUtil } = require('../common/infra_util');
 // Imports end
 
 // Initialization start

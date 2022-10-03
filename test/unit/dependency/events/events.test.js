@@ -1,20 +1,18 @@
-
-// Module imports start
-const Events = require('../../../../dependency/events');
-const RPCFramework = require('../../../../index');
-const trajectory = require('@uc-engg/trajectory');
-const Utils = require('../../../../dependency/utils');
-const Slack = require('../../../../slack');
-const OpenApiSchema = require('../../../../schema/services/fetch_schema_object');
-RPCFramework.SERVICE_TYPE = 'typescript';
-
 jest.mock('@uc-engg/trajectory', () => ({
   initProducer: jest.fn(() => ({})),
   initConsumer: jest.fn(() => ({}))
 }), {virtual:true});
 jest.mock('../../../../index');
 jest.mock('../../../../slack');
-jest.mock('../../../../schema/services/fetch_schema_object');
+jest.mock('../../../../schema/services/index');
+
+// Module imports start
+const { Events } = require('../../../../dependency/events');
+const RPCFramework = require('../../../../index');
+const trajectory = require('@uc-engg/trajectory');
+const { Utils } = require('../../../../dependency/utils');
+const { OpenApiSchema } = require('../../../../schema/services');
+RPCFramework.SERVICE_TYPE = 'typescript';
 
 describe('test event producer dependency', () => {
 

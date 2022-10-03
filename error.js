@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const LOG_CONSTANTS = require('./logging/log_constants');
+const Singleton = require('./singleton');
 const Error = {};
 
 /** Server side errors */
@@ -49,6 +50,20 @@ Error.UCError = class UCError extends global.Error {
   }
 }
 
+Error.RPCError = class RPCError extends global.Error {
+  constructor(data) {
+    data = data || {};
+    super();
+    let message = data.err_message || data.message
+    this.err_message = (typeof message === 'string') ? message : ''
+    this.err_stack = data.err_stack || this.stack;
+    this.err_type = (typeof data.err_type === 'string' && data.err_type.split(' ').length === 1) ?
+      data.err_type : Error.RPC_INVALID_ERROR_FORMAT;
+    if (data.name) this.name = data.name 
+    if (data.code) this.code = data.code
+    if (data.is_silent) this.is_silent = data.is_silent
+  }
+}
 Error.ExternalError = class ExternalError extends global.Error {
   constructor(data) {
     if (!data || typeof data === 'string') {
@@ -73,7 +88,7 @@ Error.sanitiseError = function(err) {
   let errorMessage = err.err_message || err.message
   errorMessage = (typeof errorMessage === 'string') ? errorMessage : '';
 
-  if(err instanceof this.UCError) {
+  if(err instanceof this.UCError || err instanceof this.RPCError) {
     sanitised_err[LOG_CONSTANTS.SYSTEM_LOGS.ERROR_TYPE] = err.err_type;
     sanitised_err[LOG_CONSTANTS.STRINGIFY_OBJECTS.ERROR_MESSAGE] = errorMessage;
     sanitised_err[LOG_CONSTANTS.STRINGIFY_OBJECTS.ERROR_STACK] = err.err_stack;
@@ -93,5 +108,23 @@ Error.sanitiseError = function(err) {
   }
   return sanitised_err;
 }
+
+/**
+  * Add UCError class to Singleton and global object.
+  */
+Error.initUCError = () => {
+  global.UCError = Error.UCError;
+  Singleton.addToSingleton('UCError', Error.UCError);
+  return Error.UCError;
+},
+
+/**
+* Add RPCError class to Singleton and global object.
+*/
+Error.initRPCError = () => {
+  global.RPCError = Error.RPCError;
+  Singleton.addToSingleton('RPCError', Error.RPCError);
+  return Error.RPCError;
+},
 
 module.exports = Error;

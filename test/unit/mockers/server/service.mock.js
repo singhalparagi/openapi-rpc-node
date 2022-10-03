@@ -45,7 +45,7 @@ const callingServiceSchema = {
   }
 };
 
-jest.mock('../../../../server/dependency_loader');
+jest.mock('../../../../server/common/dependency_loader');
 
 const Constants = require('../../../../constants');
 jest.doMock('../../../../constants', () => {
@@ -60,13 +60,12 @@ jest.mock('../../../../package.json', () => {
 });
 
 const RpcFramework = require('../../../../index');
-jest.spyOn(RpcFramework, 'initCredentials').mockImplementation(() => {
+const CredentialManagement = require("../../../../credential_management");
+jest.spyOn(CredentialManagement, 'initCredentials').mockImplementation(() => {
   return new Promise((resolve) => {
     resolve();
   });
 });
-jest.mock('../../../../dependency/mycroft_monitoring');
-jest.mock('../../../../schema/services/service_self_schema_object');
 jest.spyOn(RpcFramework, 'createServer').mockImplementation(() => {});
 jest.spyOn(RpcFramework, 'initConfig').mockImplementation(() => {
   const RPCClientTestConstants = require('../../resources/constants').RPC_CLIENT;
@@ -81,3 +80,32 @@ jest.spyOn(RpcFramework, 'initLogger').mockImplementation(() => {
     info: jest.fn()
   };
 });
+
+const { Securitas } = require('../../../../dependency/securitas')
+jest.spyOn(Securitas, 'initSecuritasClient').mockImplementation(() => {
+  return new Promise((resolve) => {
+    resolve();
+  })
+})
+
+const serviceObject = require('../../../../schema/services/schema_object');
+jest.spyOn(serviceObject, 'initDependencyClients').mockImplementation((Repo) => {
+  const dependencySchemas = require('../../../../node_modules/dependency_schemas.json');
+  const ChangeCase = require('change-case');
+  Object.keys(dependencySchemas).forEach((serviceId) => {
+    let schema = dependencySchemas[serviceId];
+    if (schema.swagger != "2.0" ||
+      schema.basePath != '/' + serviceId ||
+      schema.info.title != ChangeCase.pascalCase(serviceId)) {
+      throw { err_type: "schema_validation_failed" };
+    }
+    Repo.openapi[serviceId] = {};
+    Repo.openapi[serviceId][schema.info.version] = {
+      version: schema.info.version,
+      service_name: ChangeCase.pascalCase(serviceId),
+      schema: schema
+    }
+  })
+})
+
+jest.spyOn(serviceObject, 'initServiceClient').mockImplementation((serviceName, Repo) => {})

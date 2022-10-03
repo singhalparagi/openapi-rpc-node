@@ -1,9 +1,8 @@
 var Cls = require('cls-hooked');
 let SchemaFilter = require('json-schema-filter')
-let trxnHeaderSchema = require('./schema/transaction_context/header')
+const trxnHeaderSchema = require('./schema/transaction_context').getHeaderSchema();
 const Error = require('./error');
 const PrioritizedLoadShed = require('./load_shed/strategy/prioritized')
-const UCError = Error.UCError;
 
 const ContextConstants = {
   UC_TRXN_CONTEXT_NS: 'uc-txn-context-ns',
@@ -37,14 +36,6 @@ transactionContext.getPriority = () => {
 }
 
 transactionContext.getTrxnHeaders = (request_body) => {
-  if (_.isUndefined(request_body)) {
-    let ucError = {
-      err_message: "Please pass the request body in getTrxnHeaders().",
-      err_type: Error.INVALID_PARAMS_ERROR
-
-    }
-    throw new UCError(ucError);
-  }
   SessionContext = Cls.getNamespace(ContextConstants.UC_TRXN_CONTEXT_NS);
   return SessionContext.get(ContextConstants.HEADERS);
 }
@@ -55,7 +46,7 @@ transactionContext.getNamespace = () => {
 
 transactionContext.getExpressMiddleware = () => {
   return function transactionContextMiddleware(req, res, next) {
-    req.trxn_id = req.query.trxn_id || Crypto.randomBytes(16).toString("hex");
+    req.trxn_id = req.query.trxn_id || req.headers['cf-ray'] || Crypto.randomBytes(16).toString("hex");
     req.priority = req.query.priority || PrioritizedLoadShed.assignPriorityToRequest(req);
     req.language = req.query.language || req.headers['x-preferred-language'];
     SessionContext = Cls.getNamespace(ContextConstants.UC_TRXN_CONTEXT_NS);

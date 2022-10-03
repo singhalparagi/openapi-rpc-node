@@ -6,15 +6,14 @@ const Singleton = require('../singleton').getSingleton();
 const Logger = Singleton.Logger;
 const AuthMetricUtils = require('./auth_metric_utils');
 const AuthUtils = require('./auth_utils');
-const UCError = Singleton.UCError
 const LOG_CONSTANTS = require('../logging/log_constants');
 const Auth = Singleton.auth_service;
 const AccessControlService = Singleton["access-control-service"];
 const AuditContextConstants = Singleton.AuditContextConstants;
 const Authentication = {};
 const RPC_CONSTANTS = require('../constants');
-const ERRORS = require('../error');
 const Mycroft = require('@uc-engg/mycroft');
+const Error = require('../error');
 const AUTH_CONSTANTS = require('./auth_constants').AUTH_METRICS;
 const AUTH_TOKEN_TYPE = AUTH_CONSTANTS.TOKEN.TYPE;
 const AUTH_CAPTCHA_TYPE = AUTH_CONSTANTS.CAPTCHA.TYPE;
@@ -23,7 +22,7 @@ const TYPE_LABEL = AUTH_CONSTANTS.LABEL.TYPE;
 const ERROR_TYPE_LABEL = AUTH_CONSTANTS.LABEL.ERROR_TYPE;
 const ROUTE_NAME_LABEL = AUTH_CONSTANTS.LABEL.ROUTE;
 const GUEST_ROLE_ALLOWED_LABEL = AUTH_CONSTANTS.LABEL.GUEST_ROLE_ALLOWED;
-const CommonUtils = require('../common/request_headers_util');
+const { RequestHeadersUtil } = require('../common/request_headers_util');
 
 
 const ERROR_CODES = {
@@ -54,7 +53,7 @@ async function authenticateCaptcha(secretKey, captchaKey, ip){
 Authentication.isCaptchaAuthenticated = function(options){
   let allowedRoles = options.roles;
   return compose().use( async function( req, res, next ) {
-    const DeviceOS = CommonUtils.getDeviceType(req.headers);
+    const DeviceOS = RequestHeadersUtil.getDeviceType(req.headers);
     try{
       const ip = _.get(req, 'headers.x-forwarded-for') || _.get(req, 'connection.remoteAddress') || _.get(req, 'socket.remoteAddress') ||
                 _.get(req, 'connection.socket.remoteAddress');
@@ -90,7 +89,7 @@ Authentication.isCaptchaAuthenticated = function(options){
           name: AUTH_CONSTANTS.AUTH_FAILURE,
           message: AUTH_CONSTANTS.CAPTCHA.FAILURE_MSG,
           code: ERROR_CODES.UNAUTHORIZED,
-          err_type: ERRORS.RPC_AUTH_ERROR
+          err_type: Error.RPC_AUTH_ERROR
         };
         next(err);
       }
@@ -174,10 +173,10 @@ const handleAuthError = (name, message = 'Authorization Failure') => {
     name,
     message,
     code: ERROR_CODES.UNAUTHORIZED,
-    err_type: ERRORS.RPC_AUTH_ERROR
+    err_type: Error.RPC_AUTH_ERROR
   };
   //Genuine issue with auth 
-  throw new UCError(code);
+  throw new Error.RPCError(code);
 }
 
 /**
@@ -193,7 +192,7 @@ Authentication.isClientAuthenticatedAndAuthorized = function(options) {
   return compose().use(async function(req, res, next) {
     const StartTime = Date.now();
     let token = AuthUtils.getToken(req.headers);
-    const DeviceOS = CommonUtils.getDeviceType(req.headers);
+    const DeviceOS = RequestHeadersUtil.getDeviceType(req.headers);
     try {
       let response = await Auth.verifyAuthenticationAndAuthorization({
         token: token, allowed_roles: allowedRoles, allowedSubRoles 
@@ -210,14 +209,14 @@ Authentication.isClientAuthenticatedAndAuthorized = function(options) {
           name: AUTH_CONSTANTS.AUTH_FAILURE,
           message: response.reason,
           code: errorCode,
-          err_type: ERRORS.RPC_AUTH_ERROR
+          err_type: Error.RPC_AUTH_ERROR
         };
         //Genuine issue with auth
-        throw new UCError(code);
+        throw new Error.RPCError(code);
       }
     } catch (err) {
       //Issue with auth service
-      if(err instanceof UCError && err.name === AUTH_CONSTANTS.AUTH_FAILURE){
+      if(err instanceof Error.RPCError && err.name === AUTH_CONSTANTS.AUTH_FAILURE){
         // Failure response from auth
         AuthMetricUtils.captureCounterMetric(AUTH_CONSTANTS.AUTH_METRIC_STORE,
           AUTH_CONSTANTS.REQ_ERROR_COUNT_METRIC, {
@@ -238,7 +237,7 @@ Authentication.isClientAuthenticatedAndAuthorized = function(options) {
       }
       let logError = {};
       logError[LOG_CONSTANTS.SYSTEM_LOGS.API_NAME] = req.url;
-      logError[LOG_CONSTANTS.SYSTEM_LOGS.ERROR_TYPE] = ERRORS.RPC_AUTH_ERROR;
+      logError[LOG_CONSTANTS.SYSTEM_LOGS.ERROR_TYPE] = Error.RPC_AUTH_ERROR;
       logError[LOG_CONSTANTS.COMMON_PARAMS.METHOD_NAME] = RPC_CONSTANTS.GATEWAY.MIDDLEWARE.AUTH_METHOD.CLIENT_AUTHENTICATION;
       logError[LOG_CONSTANTS.STRINGIFY_OBJECTS.ERROR] = JSON.stringify(err);
       logError[LOG_CONSTANTS.SERVICE_LEVEL_PARAMS.KEY_1] = 'headers';

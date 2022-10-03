@@ -2,7 +2,7 @@ const Armor = require('@uc-engg/armor');
 const Singleton = require('../singleton').getSingleton();
 const _ = require('lodash');
 const RequestPromise = require('request-promise');
-
+const CIRCUIT_BREAKER_CONSTANTS = require('./constants');
 const PLATFORM_CONFIG_SERVICE_ID = 'platform-config-service';
 const Command = Armor.initCircuitBreaker();
 
@@ -61,4 +61,38 @@ function persistCircuitBreakerConfig(serviceName, externalServiceName, apiConfig
   }
 }
 
-module.exports = { decorateWithCircuitBreakerOptions, persistCircuitBreakerConfig };
+/**
+  * Function to capitalize circuite breaker options
+  * TODO move this to armor
+  */
+const transformCircuitBreakerOptions = (obj) => {
+  if (!obj) {
+    return;
+  }
+
+  const newObj = {};
+  _.keys(obj).forEach(key => {
+    newObj[key.toUpperCase()] = obj[key];
+  });
+
+  return newObj;
+}
+
+/**
+  * fetches the circuitBreakerOptions from config/constants.
+  */
+const getCircuitBreakerOptions = (apiConfig, method_name, called_service_id) => {
+  let circuitBreakerOptions = _.get(apiConfig, `${method_name}.CIRCUIT_BREAKER_OPTIONS`, null);
+
+  if(!circuitBreakerOptions || !circuitBreakerOptions.ENABLE) {
+    circuitBreakerOptions = CIRCUIT_BREAKER_CONSTANTS.DEFAULT_CIRCUIT_BREAKER_OPTIONS[called_service_id]; // to enforce circuit breaker options if the external service wants so.
+  }
+  return circuitBreakerOptions;
+}
+
+module.exports = { 
+  decorateWithCircuitBreakerOptions,
+  persistCircuitBreakerConfig,
+  transformCircuitBreakerOptions,
+  getCircuitBreakerOptions
+};

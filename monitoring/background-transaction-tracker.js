@@ -1,5 +1,4 @@
 'use strict'
-const ServiceMetaDataUtil = require('../common/service_metadata_util');
 
 const getAPMConfig = () => {
   return { asyncHooks : true }

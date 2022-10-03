@@ -2,7 +2,6 @@ module.exports = () => {
   const path = require('path');
   const fs = require('fs');
   const testSetup = {};
-
   // Importing common mocks from test/unit/mockers/mocks.js'
   testSetup.commonMock = require('./mockers/mock');
 
@@ -10,7 +9,6 @@ module.exports = () => {
     0,
     require.main.filename.indexOf('test/unit') + 'test/unit'.length + 1
   );
-
   const testFileRelativePath = require.main.filename.slice(
     require.main.filename.indexOf('test/unit') + 'test/unit'.length,
     require.main.filename.lastIndexOf(path.sep) + 1
@@ -28,6 +26,7 @@ module.exports = () => {
     testFileRelativePath +
     mockFileName +
     '.js';
+
   if (fs.existsSync(mockFilePath)) {
     testSetup.mock = require(mockFilePath);
   }

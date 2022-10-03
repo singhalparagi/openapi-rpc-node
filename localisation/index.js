@@ -1,8 +1,8 @@
 'use strict';
 
-var Localisation = require('./service');
+const Localisation = require('./service');
 
-function initLocalisationService(serviceId, RpcFramework){
+function initLocalisationService(serviceId){
   let localisation = {
     /*
       How to use the below methods from SM or any micro service
@@ -53,7 +53,7 @@ function initLocalisationService(serviceId, RpcFramework){
      */
 
     getLocalizedResponse     : function (response, options) {
-      return Promise.resolve(Localisation.getLocalizedResponse(RpcFramework, response, options))
+      return Promise.resolve(Localisation.getLocalizedResponse(response, options))
     }
   }
   return localisation

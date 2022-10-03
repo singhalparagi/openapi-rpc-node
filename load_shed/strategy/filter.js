@@ -5,7 +5,7 @@ const _ = require('lodash');
 const Singleton = require('../../singleton').getSingleton();
 const LoadShedConstants = require('../constants');
 const LoadShedUtil = require('../util');
-const ScriptConstants = require('../../scripts/constants');
+const ScriptConstants = require('../../scripts/common/constants');
 // Imports end
 
 // Initialization start

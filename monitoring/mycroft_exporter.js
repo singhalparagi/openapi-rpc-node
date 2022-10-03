@@ -7,7 +7,7 @@ const LOG_TYPE = require('../logging/log_type');
 const Error = require('../error');
 const RPC_CONSTANTS = require('../constants');
 const Mycroft = require('@uc-engg/mycroft');
-const Events = require('../dependency/events');
+const { Events } = require('../dependency/events');
 const RPC_METRICS = MONITORING_CONSTANTS.RPC_METRICS;
 const MIDDLEWARE_METRICS = MONITORING_CONSTANTS.MIDDLEWARE_METRICS;
 const APPLICATION_METRICS = MONITORING_CONSTANTS.APPLICATION_METRICS;
@@ -47,18 +47,17 @@ function ApplicationMetrics(client, startTimeMs) {
 
 function getTrajectoryMetrics() {
   if (Events.isLibraryInitialized()) {
-    const EventLib = require('trajectory');
+    const EventLib = require('@uc-engg/trajectory');
     return EventLib.exportMonitoringMetrics();
   }
   return '';
 }
 
 function getFlashMetrics() {
-  if (Singleton['cache']) {
-    return Singleton['cache'].exportMetrics();  
-  }
-  if (Singleton['AuthServiceCache']) {
-    return Singleton['AuthServiceCache'].exportMetrics();  
+  for(const id of MONITORING_CONSTANTS.CACHE_SINGLETON_IDS) {
+    if(Singleton[id]) {
+      return Singleton[id].exportMetrics();
+    }
   }
   return '';
 }

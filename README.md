@@ -303,4 +303,3 @@ Singleton is an object that is used to access all the dependencies initialised b
   ```Javascript
   let mongooseConnection = Singleton["mongodb_my_test_database"];
   ```
-

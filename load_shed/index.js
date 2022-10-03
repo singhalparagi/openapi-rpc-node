@@ -5,9 +5,8 @@ const _ = require('lodash');
 const Singleton = require('../singleton').getSingleton();
 const RpcConstants = require('../constants');
 const LoadShedConstants = require('./constants');
-const ScriptConstants = require('../scripts/constants');
+const ScriptConstants = require('../scripts/common/constants');
 const Error = require('../error');
-const UCError = Error.UCError;
 const DateTime = require('luxon').DateTime;
 const LoadShedUtil = require('./util');
 const PrioritizedLoadShed = require('./strategy/prioritized');
@@ -52,7 +51,7 @@ LoadShed.loadShedManager = async function loadShedMiddleware(req, res, next){
         const PrioritizedLoadShed = require('./strategy/prioritized');
         message = PrioritizedLoadShed.getAPIClientLoadShedMap(req);
       }
-      return next(new UCError({
+      return next(new Error.RPCError({
         err_type: Error.REQUEST_LOAD_SHEDED,
         err_message: message ? JSON.stringify(message): "",
         code: RpcConstants.HTTP_RESPONSE_CODE_TOO_MANY_REQUESTS

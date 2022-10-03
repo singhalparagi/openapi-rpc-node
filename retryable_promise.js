@@ -130,7 +130,7 @@ RetryablePromise.prototype.run = function (originalFunction, retries, ...args) {
  * @param backOffFactor. Exponential back off multiplier.
  * @param shouldRetryOnError. A function that based on error can evaluate a retry should happen or not.
  */
-function retryablePromiseWrapper(originalFunction, retries, retryAfterMs, backOffFactor, shouldRetryOnError, timeoutInMs){
+function retryablePromiseWrapper(originalFunction, retries, retryAfterMs, backOffFactor, shouldRetryOnError, timeoutInMs = 0){
 
     let retryablePromise = new RetryablePromise(retries, retryAfterMs, backOffFactor, shouldRetryOnError, timeoutInMs);
 

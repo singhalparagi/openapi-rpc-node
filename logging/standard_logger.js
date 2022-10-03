@@ -112,18 +112,19 @@ function getApiErrorData(error) {
 }
 
 function standardizeLog(data) {
-  let Config = require('../config');
+  const { LoggingUtils } = require('./logging_utils')
+  const { Config } = require('../config');
   try {
     data = logFilter.filterKeys(data);
     let schemaValidationResult = logFilter.isSchemaValid(data);
     if(schemaValidationResult.valid) {
       data[STANDARD_LOGGING_STATUS] = PASSED;
-      data[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_ID] = Config.getContainerId();
-      data[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_IP] = Config.getContainerIp();
-      data[LOG_CONSTANTS.SYSTEM_LOGS.BUILD_VERSION] = Config.getBuildVersion();
-      data[LOG_CONSTANTS.SYSTEM_LOGS.TASK_ID] = Config.getTaskId();
-      data[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_PORT] = Config.getContainerPort();
-      data[LOG_CONSTANTS.SYSTEM_LOGS.SERVICE_PORT] = Config.getServicePort();
+      data[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_ID] = LoggingUtils.getContainerId();
+      data[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_IP] = LoggingUtils.getContainerIp();
+      data[LOG_CONSTANTS.SYSTEM_LOGS.BUILD_VERSION] = LoggingUtils.getBuildVersion();
+      data[LOG_CONSTANTS.SYSTEM_LOGS.TASK_ID] = LoggingUtils.getTaskId();
+      data[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_PORT] = LoggingUtils.getContainerPort();
+      data[LOG_CONSTANTS.SYSTEM_LOGS.SERVICE_PORT] = LoggingUtils.getServicePort();
       data[LOG_CONSTANTS.SYSTEM_LOGS.SOURCE_TYPE] = Config.getSourceType();
       data[LOG_CONSTANTS.SYSTEM_LOGS.RELEASE_VERSION] = RELEASE_VERSION;
       return data;
@@ -135,12 +136,12 @@ function standardizeLog(data) {
       updatedData[LOG_CONSTANTS.STRINGIFY_OBJECTS.ERROR_MESSAGE] = schemaValidationResult.errors[0] ?
         schemaValidationResult.errors[0].property + schemaValidationResult.errors[0].message : "";
       updatedData[LOG_CONSTANTS.SYSTEM_LOGS.LOG_TYPE] = LOG_TYPE.RPC_SERVICE;
-      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_ID] = Config.getContainerId();
-      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_IP] = Config.getContainerIp();
-      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.BUILD_VERSION] = Config.getBuildVersion();
-      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.TASK_ID] = Config.getTaskId();
-      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_PORT] = Config.getContainerPort();
-      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.SERVICE_PORT] = Config.getServicePort();
+      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_ID] = LoggingUtils.getContainerId();
+      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_IP] = LoggingUtils.getContainerIp();
+      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.BUILD_VERSION] = LoggingUtils.getBuildVersion();
+      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.TASK_ID] = LoggingUtils.getTaskId();
+      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.CONTAINER_PORT] = LoggingUtils.getContainerPort();
+      updatedData[LOG_CONSTANTS.SYSTEM_LOGS.SERVICE_PORT] = LoggingUtils.getServicePort();
       updatedData[LOG_CONSTANTS.SYSTEM_LOGS.SOURCE_TYPE] = Config.getSourceType();
       updatedData[LOG_CONSTANTS.SYSTEM_LOGS.RELEASE_VERSION] = RELEASE_VERSION;
       updatedData[STANDARD_LOGGING_STATUS] = PASSED;
