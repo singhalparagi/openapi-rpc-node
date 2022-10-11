@@ -10,5 +10,5 @@ const config = {
   },
   NAMESPACE_CREATED: false
 };
-
+//test
 module.exports = config;
